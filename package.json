@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "craco vite && npm run server ",
+    "dev": "craco vite",
     "build": "craco vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -33,6 +33,7 @@
     "eslint-plugin-react-refresh": "^0.4.18",
     "globals": "^15.14.0",
     "json-server": "^1.0.0-beta.3",
+    "sass": "^1.84.0",
     "vite": "^6.1.0"
   }
 }
