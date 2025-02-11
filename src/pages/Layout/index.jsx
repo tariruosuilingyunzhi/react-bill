@@ -26,7 +26,6 @@ const tabs = [
 
 const Layout = () => {
   const dispatch = useDispatch()
-
   useEffect(() => {
     dispatch(getBillList())
   }, [dispatch])
