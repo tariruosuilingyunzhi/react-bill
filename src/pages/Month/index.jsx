@@ -11,11 +11,13 @@ const Month = () => {
   const [visible, setVisible] = useState(false)
   const billList = useSelector(state => state.bill.billList)
   const billMonthGroup = useMemo(() => {
-    return _.groupBy(billList, bill => dayjs(bill.date).format('YYYY-MM'))
+    return _.groupBy(billList, item => dayjs(item.date).format('YYYY-MM'))
   }, [billList])
+
   const [date, setDate] = useState(() => {
     return dayjs(new Date()).format('YYYY-MM')
   })
+
   const [curBillList, setCurBillList] = useState([])
   const confirm = xzdate => {
     setVisible(false)
@@ -49,14 +51,11 @@ const Month = () => {
     }
   }, [billMonthGroup])
 
-  // day数据
-
   const dilayList = useMemo(() => {
     const dilayBillList = _.groupBy(curBillList, item => dayjs(item.date).format('YYYY-MM-DD'))
     const keys = Object.keys(dilayBillList)
-    // console.log(dilayBillList, keys)
     return { dilayBillList, keys }
-  })
+  }, [curBillList])
 
   return (
     <div className="monthlyBill">
