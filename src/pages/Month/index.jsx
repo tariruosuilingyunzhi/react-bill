@@ -98,8 +98,8 @@ const Month = () => {
           />
         </div>
         {/* 账单列表 */}
-        {dilayList.keys.map(key => (
-          <DailyBill key={key} dilayBillList={dilayList.dilayBillList[key]} keys={key} />
+        {dilayList.keys.map(keys => (
+          <DailyBill key={keys} dilayBillList={dilayList.dilayBillList[keys]} date={keys} />
         ))}
       </div>
     </div>

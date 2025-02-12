@@ -31,7 +31,7 @@ const Layout = () => {
   }, [dispatch])
   const navigate = useNavigate()
   const changeRouter = path => {
-    console.log(path)
+    // console.log(path)
     navigate(path)
   }
   return (

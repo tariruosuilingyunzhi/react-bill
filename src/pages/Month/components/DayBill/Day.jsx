@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { billTypeToName } from '@/contants'
 import Icon from '@/components/Icon'
 
-const DailyBill = ({ dilayBillList, keys }) => {
+const DailyBill = ({ dilayBillList, date }) => {
   const reduce = useMemo(() => {
     const payTotal = dilayBillList.filter(item => item.type === 'pay').reduce((a, b) => a + b.money, 0)
     const incomeTotal = dilayBillList.filter(item => item.type === 'income').reduce((a, b) => a + b.money, 0)
@@ -19,7 +19,7 @@ const DailyBill = ({ dilayBillList, keys }) => {
     <div className={classNames('dailyBill')}>
       <div className="header">
         <div className="dateIcon">
-          <span className="date">{keys}</span>
+          <span className="date">{date}</span>
           <span onClick={() => setVisible(!visible)} className={classNames('arrow', visible && 'expand')}></span>
         </div>
         <div className="oneLineOverview">
@@ -49,7 +49,7 @@ const DailyBill = ({ dilayBillList, keys }) => {
                     {billTypeToName[item.useFor]}
                   </div>
                 </div>
-                <div className={classNames('money', item.type)}>{item.money.toFixed(2)}</div>
+                <div className={classNames('money', item.type)}>{item.money}</div>
               </div>
             )
           })}
