@@ -9,17 +9,29 @@ import { useSelector } from 'react-redux'
 
 const Month = () => {
   const [visible, setVisible] = useState(false)
-  const [date, setDate] = useState(dayjs(new Date()).format('YYYY-MM'))
-  const confirm = date => {
-    setVisible(false)
-    setDate(dayjs(date).format('YYYY-MM'))
-  }
-
   const billList = useSelector(state => state.bill.billList)
-  useMemo(() => {
-    const newBillList = _.groupBy(billList, bill => dayjs(bill.date).format('YYYY-MM'))
-    console.log(newBillList)
+  const billMonthGroup = useMemo(() => {
+    return _.groupBy(billList, bill => dayjs(bill.date).format('YYYY-MM'))
   }, [billList])
+  const [date, setDate] = useState(dayjs(new Date()).format('YYYY-MM'))
+  const [curBillList, setCurBillList] = useState([])
+  const confirm = xzdate => {
+    setVisible(false)
+    const curDate = dayjs(xzdate).format('YYYY-MM')
+    setDate(curDate)
+    // 根据选择的日期筛选出账单
+    setCurBillList(billMonthGroup[curDate])
+  }
+  const reduce = useMemo(() => {
+    const payTotal = curBillList.filter(item => item.type === 'pay').reduce((a, b) => a + b.money, 0)
+    const incomeTotal = curBillList.filter(item => item.type === 'income').reduce((a, b) => a + b.money, 0)
+    return {
+      payTotal,
+      incomeTotal,
+      total: payTotal + incomeTotal,
+    }
+  }, [curBillList])
+
   return (
     <div className="monthlyBill">
       <NavBar className="nav" backIcon={null}>
@@ -35,15 +47,15 @@ const Month = () => {
           {/* 统计区域 */}
           <div className="twoLineOverview">
             <div className="item">
-              <span className="money">{100}</span>
+              <span className="money">{reduce.payTotal}</span>
               <span className="type">支出</span>
             </div>
             <div className="item">
-              <span className="money">{200}</span>
+              <span className="money">{reduce.incomeTotal}</span>
               <span className="type">收入</span>
             </div>
             <div className="item">
-              <span className="money">{200}</span>
+              <span className="money">{reduce.total}</span>
               <span className="type">结余</span>
             </div>
           </div>
