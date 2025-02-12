@@ -13,7 +13,9 @@ const Month = () => {
   const billMonthGroup = useMemo(() => {
     return _.groupBy(billList, bill => dayjs(bill.date).format('YYYY-MM'))
   }, [billList])
-  const [date, setDate] = useState(dayjs(new Date()).format('YYYY-MM'))
+  const [date, setDate] = useState(() => {
+    return dayjs(new Date()).format('YYYY-MM')
+  })
   const [curBillList, setCurBillList] = useState([])
   const confirm = xzdate => {
     setVisible(false)
@@ -22,15 +24,25 @@ const Month = () => {
     // 根据选择的日期筛选出账单
     setCurBillList(billMonthGroup[curDate])
   }
+
   const reduce = useMemo(() => {
-    const payTotal = curBillList.filter(item => item.type === 'pay').reduce((a, b) => a + b.money, 0)
-    const incomeTotal = curBillList.filter(item => item.type === 'income').reduce((a, b) => a + b.money, 0)
-    return {
-      payTotal,
-      incomeTotal,
-      total: payTotal + incomeTotal,
+    if (curBillList == undefined) {
+      return {
+        payTotal: 0,
+        incomeTotal: 0,
+        total: 0,
+      }
+    } else {
+      const payTotal = curBillList.filter(item => item.type === 'pay').reduce((a, b) => a + b.money, 0)
+      const incomeTotal = curBillList.filter(item => item.type === 'income').reduce((a, b) => a + b.money, 0)
+      return {
+        payTotal,
+        incomeTotal,
+        total: payTotal + incomeTotal,
+      }
     }
   }, [curBillList])
+
   useEffect(() => {
     if (billMonthGroup[dayjs().format('YYYY-MM')]) {
       setCurBillList(billMonthGroup[dayjs().format('YYYY-MM')])
@@ -42,7 +54,7 @@ const Month = () => {
   const dilayList = useMemo(() => {
     const dilayBillList = _.groupBy(curBillList, item => dayjs(item.date).format('YYYY-MM-DD'))
     const keys = Object.keys(dilayBillList)
-    console.log(dilayBillList, keys)
+    // console.log(dilayBillList, keys)
     return { dilayBillList, keys }
   })
 
