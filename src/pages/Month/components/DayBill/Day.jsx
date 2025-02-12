@@ -1,6 +1,8 @@
 import classNames from 'classnames'
 import './index.scss'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { billTypeToName } from '@/contants'
+
 const DailyBill = ({ dilayBillList, keys }) => {
   const reduce = useMemo(() => {
     const payTotal = dilayBillList.filter(item => item.type === 'pay').reduce((a, b) => a + b.money, 0)
@@ -11,12 +13,13 @@ const DailyBill = ({ dilayBillList, keys }) => {
       total: payTotal + incomeTotal,
     }
   }, [dilayBillList])
+  const [visible, setVisible] = useState(false)
   return (
     <div className={classNames('dailyBill')}>
       <div className="header">
         <div className="dateIcon">
           <span className="date">{keys}</span>
-          <span className={classNames('arrow')}></span>
+          <span onClick={() => setVisible(!visible)} className={classNames('arrow', visible && 'expand')}></span>
         </div>
         <div className="oneLineOverview">
           <div className="pay">
@@ -33,6 +36,21 @@ const DailyBill = ({ dilayBillList, keys }) => {
           </div>
         </div>
       </div>
+      {/* 单日列表 */}
+      {visible && (
+        <div className="billList">
+          {dilayBillList.map(item => {
+            return (
+              <div className="bill" key={item.id}>
+                <div className="detail">
+                  <div className="billType">{billTypeToName[item.useFor]}</div>
+                </div>
+                <div className={classNames('money', item.type)}>{item.money.toFixed(2)}</div>
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }
