@@ -1,9 +1,9 @@
 import { NavBar, DatePicker } from 'antd-mobile'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import _ from 'lodash'
 import classNames from 'classnames'
 import dayjs from 'dayjs'
-
+import DailyBill from './components/DayBill/Day'
 import './index.scss'
 import { useSelector } from 'react-redux'
 
@@ -31,6 +31,20 @@ const Month = () => {
       total: payTotal + incomeTotal,
     }
   }, [curBillList])
+  useEffect(() => {
+    if (billMonthGroup[dayjs().format('YYYY-MM')]) {
+      setCurBillList(billMonthGroup[dayjs().format('YYYY-MM')])
+    }
+  }, [billMonthGroup])
+
+  // day数据
+
+  const dilayList = useMemo(() => {
+    const dilayBillList = _.groupBy(curBillList, item => dayjs(item.date).format('YYYY-MM-DD'))
+    const keys = Object.keys(dilayBillList)
+    console.log(dilayBillList, keys)
+    return { dilayBillList, keys }
+  })
 
   return (
     <div className="monthlyBill">
@@ -71,6 +85,10 @@ const Month = () => {
             max={new Date()}
           />
         </div>
+        {/* 账单列表 */}
+        {dilayList.keys.map(key => (
+          <DailyBill key={key} dilayBillList={dilayList.dilayBillList[key]} keys={key} />
+        ))}
       </div>
     </div>
   )
